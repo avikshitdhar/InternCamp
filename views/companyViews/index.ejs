@@ -1,0 +1,57 @@
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+      <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+
+        <!-- Company Logo -->
+        <div class="bg-light">
+          <img src="<%= company.logo %>"
+               class="img-fluid w-100"
+               style="object-fit: cover; max-height: 250px;">
+        </div>
+
+        <!-- Company Info (Muted Background) -->
+        <div class="card-body p-4 d-flex flex-column justify-content-between bg-secondary bg-opacity-25">
+
+          <div>
+            <h3 class="card-title fw-semibold mb-2"><%= company.name %></h3>
+            <p class="text-muted mb-3"><i class="bi bi-person-badge me-1"></i> Company Profile</p>
+
+            <hr class="text-muted">
+
+            <!-- Stats Section -->
+            <div class="d-flex justify-content-around gap-4 mb-3">
+              <div class="text-center">
+                <i class="bi bi-stickies fs-3 text-primary"></i>
+                <h5 class="mb-0 mt-1"><%= postings.length %></h5>
+                <small class="text-muted">Posts</small>
+              </div>
+
+              <div class="text-center">
+                <i class="bi bi-file-earmark-person fs-3 text-success"></i>
+                <h5 class="mb-0 mt-1"><%= applications.length %></h5>
+                <small class="text-muted">Applications</small>
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <p class="mb-1">
+                <i class="bi bi-envelope-fill text-primary me-2"></i>
+                <strong>Email:</strong> <%= company.email %>
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="mt-4">
+            <a href="/api/company/<%=company._id%>/postings/new"
+               class="btn btn-outline-primary px-4 py-2">
+              <i class="bi bi-file-earmark-text me-1"></i> Create Opportunity
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

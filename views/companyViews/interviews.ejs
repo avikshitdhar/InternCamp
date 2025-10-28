@@ -1,0 +1,65 @@
+<div class="container my-5">
+  <h2 class="mb-4">Interviews</h2>
+
+  <% if (!interviews || interviews.length === 0) { %>
+    <div class="alert alert-info text-center">
+      No interviews scheduled yet.
+    </div>
+  <% } else { %>
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Posting Title</th>
+          <th>Student Name</th>
+          <th>Interview Date/Time</th>
+          <th>Result</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% interviews.forEach(interview => { 
+             const app = interview.applicationId;
+             if (!app || !app.studentId || !app.postingId) return;
+
+             // Determine badge color
+             let badgeClass;
+             switch(interview.result){
+               case 'Accepted': badgeClass = 'success'; break;
+               case 'Pending': badgeClass = 'warning'; break;
+               case 'Rejected': badgeClass = 'danger'; break;
+               default: badgeClass = 'secondary';
+             }
+
+             // Highlight row light green if Accepted
+             let rowClass = (interview.result === 'Accepted') ? 'bg-success bg-opacity-10' : '';
+        %>
+
+
+
+              <tr class="<%= interview.result === 'Accepted' ? 'table-success' : '' %>">
+  <td><%= app.postingId.title %></td>
+  <td><%= app.studentId.name %></td>
+  <td>
+    <% if (interview.interviewDate) { %>
+      <%= new Date(interview.interviewDate).toLocaleString() %>
+    <% } else { %>
+      Not scheduled
+    <% } %>
+  </td>
+  <td>
+    <span class="badge text-bg-<%= badgeClass %>"><%= interview.result || 'Pending' %></span>
+  </td>
+  <td>
+    <a href="/api/company/<%= app.postingId.userId._id %>/interviews/<%= interview._id %>"
+       class="btn btn-sm <%= interview.result && interview.result !== 'Pending' ? 'btn-secondary disabled' : 'btn-primary' %>">
+      <%= interview.result && interview.result !== 'Pending' ? 'Taken' : 'Take Interview' %>
+    </a>
+  </td>
+</tr>
+
+
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</div>

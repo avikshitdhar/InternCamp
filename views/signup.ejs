@@ -1,0 +1,46 @@
+<div class="d-flex align-items-center justify-content-center min-vh-100 bg-light mb-4">
+  <div class="card shadow-lg border-0 rounded-4 p-4" style="width: 100%; max-width: 420px;">
+    <div class="text-center mb-4">
+      <i class="bi bi-person-plus-fill text-success" style="font-size: 4rem;"></i>
+      <h3 class="mt-2 fw-semibold">Create an Account</h3>
+      <p class="text-muted mb-0">Join InternCamp and start your journey</p>
+    </div>
+
+    <form action="/signup" method="POST">
+      <div class="mb-3">
+        <label for="type" class="form-label fw-medium">Register as</label>
+        <select name="type" id="type" class="form-select">
+          <option value="student">Student</option>
+          <option value="company">Company</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label fw-medium">Email</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+          <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label fw-medium">Password</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+        </div>
+      </div>
+
+      <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-success py-2 fw-semibold">Create Account</button>
+      </div>
+
+      <div class="text-center mt-3">
+        <p class="text-muted mb-0">Already have an account? 
+          <a href="/login" class="fw-semibold text-decoration-none">Login</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

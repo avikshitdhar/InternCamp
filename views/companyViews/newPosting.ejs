@@ -1,0 +1,197 @@
+<div class="container my-5">
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-body p-4">
+      <h2 class="fw-semibold mb-4 text-center">
+        <i class="bi bi-file-earmark-plus text-primary me-2"></i>
+        Create a New Opportunity
+      </h2>
+
+      <form 
+        action="/api/company/<%= company._id %>/postings" 
+        method="POST"
+        class="needs-validation"
+        novalidate
+      >
+
+        <!-- Title -->
+        <div class="mb-3">
+          <label for="title" class="form-label fw-semibold">Title</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="title" 
+            name="posting[title]" 
+            placeholder="e.g. Software Developer Intern" 
+            required
+          >
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please enter a title.</div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <label for="description" class="form-label fw-semibold">Description</label>
+          <textarea 
+            class="form-control" 
+            id="description" 
+            name="posting[description]" 
+            rows="4" 
+            placeholder="Brief overview of the role, requirements, and expectations" 
+            required
+          ></textarea>
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please enter a description.</div>
+        </div>
+
+        <!-- Posting Type -->
+        <div class="mb-3">
+          <label for="postingType" class="form-label fw-semibold">Posting Type</label>
+          <select 
+            class="form-select" 
+            id="postingType" 
+            name="posting[postingType]" 
+            required
+          >
+            <option value="">Select type...</option>
+            <option value="Internship">Internship</option>
+            <option value="Placement">Placement</option>
+            <option value="ITES">ITES</option>
+          </select>
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please select a posting type.</div>
+        </div>
+
+        <!-- Eligibility Section -->
+        <h5 class="fw-bold mt-4 mb-3 text-primary">Eligibility Criteria</h5>
+        <div class="row g-3 align-items-end">
+
+          <div class="col-md-4">
+            <label for="minCgpa" class="form-label fw-semibold">Minimum CGPA</label>
+            <input 
+              type="number" 
+              step="0.01" 
+              min="0" 
+              max="10" 
+              class="form-control" 
+              id="minCgpa" 
+              name="posting[eligibility][minCgpa]" 
+              placeholder="e.g. 7.0" 
+              required
+            >
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please enter a valid CGPA between 0 and 10.</div>
+          </div>
+
+          <!-- ✅ Multi-select Departments -->
+          <div class="col-md-8">
+            <label class="form-label fw-semibold d-block mb-2">Eligible Departments</label>
+
+            <div class="d-flex flex-wrap gap-2">
+              <% const departments = ["CSE", "ECE", "EEE", "IT", "MECH", "CIVIL", "AIML", "BIO", "MBA"]; %>
+              <% departments.forEach(dept => { %>
+                <div class="form-check form-check-inline">
+                  <input 
+                    class="btn-check" 
+                    type="checkbox" 
+                    id="<%= dept %>" 
+                    name="posting[eligibility][eligibleDepartments][]" 
+                    value="<%= dept %>" 
+                    autocomplete="off"
+                  >
+                  <label class="btn btn-outline-secondary rounded-pill px-3" for="<%= dept %>"><%= dept %></label>
+                </div>
+              <% }) %>
+            </div>
+
+            <div class="form-text">Select one or more departments.</div>
+            <div class="invalid-feedback d-block">Please select at least one department.</div>
+          </div>
+        </div>
+
+        <!-- Eligible Years -->
+        <div class="mt-4 mb-3">
+          <label for="years" class="form-label fw-semibold">Eligible Years</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="years" 
+            name="posting[eligibility][eligibleYears]" 
+            placeholder="e.g. 2027, 2028" 
+            required
+          >
+          <small class="text-muted">Separate with commas</small>
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please enter eligible years.</div>
+        </div>
+
+        <!-- Location -->
+        <div class="mb-3">
+          <label for="location" class="form-label fw-semibold">Location</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="location" 
+            name="posting[location]" 
+            placeholder="e.g. Bengaluru / Remote"
+          >
+        </div>
+
+        <!-- Deadline -->
+        <div class="mb-3">
+          <label for="deadline" class="form-label fw-semibold">Application Deadline</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            id="deadline" 
+            name="posting[deadline]"
+          >
+        </div>
+
+        <!-- Stipend -->
+        <div class="mb-4">
+          <label for="stipend" class="form-label fw-semibold">Stipend (₹)</label>
+          <input 
+            type="number" 
+            min="0" 
+            class="form-control" 
+            id="stipend" 
+            name="posting[stipend]" 
+            placeholder="e.g. 10000"
+          >
+        </div>
+
+        <!-- Submit -->
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="btn btn-primary px-5 py-2 fw-semibold">
+            <i class="bi bi-upload me-1"></i> Create Posting
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Bootstrap Validation Script -->
+<script>
+(() => {
+  'use strict'
+  const forms = document.querySelectorAll('.needs-validation')
+
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      const checkboxes = form.querySelectorAll('input[name="posting[eligibility][eligibleDepartments][]"]')
+      const oneChecked = Array.from(checkboxes).some(cb => cb.checked)
+
+      if (!form.checkValidity() || !oneChecked) {
+        event.preventDefault()
+        event.stopPropagation()
+        if (!oneChecked) {
+          form.querySelector('.invalid-feedback.d-block').style.display = 'block'
+        }
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+</script>

@@ -1,0 +1,105 @@
+<%
+let badgeClass, borderClass, iconClass, iconColor;
+
+switch (interview.result) {
+  case 'Pending':
+    badgeClass = 'warning';
+    borderClass = 'border-warning';
+    iconClass = 'bi bi-clock-history';
+    iconColor = 'text-warning';
+    break;
+
+  case 'Accepted':
+    badgeClass = 'success';
+    borderClass = 'border-success';
+    iconClass = 'bi bi-check-circle-fill';
+    iconColor = 'text-success';
+    break;
+
+  case 'Rejected':
+    badgeClass = 'danger';
+    borderClass = 'border-danger';
+    iconClass = 'bi bi-x-circle-fill';
+    iconColor = 'text-danger';
+    break;
+
+  default:
+    badgeClass = 'secondary';
+    borderClass = 'border-secondary';
+    iconClass = 'bi bi-question-circle-fill';
+    iconColor = 'text-secondary';
+}
+%>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh; background-color: #f8f9fa;">
+  <div class="card shadow-lg border-<%=borderClass%> text-center p-5" style="width: 90%; max-width: 700px; border-radius: 1rem;">
+
+    <!-- Icon -->
+    <div class="mb-4">
+      <i class="<%=iconClass%> <%=iconColor%>" style="font-size: 4rem;"></i>
+    </div>
+
+    <!-- Student Info -->
+    <p class="text-muted mb-2 fs-5">
+      <i class="bi bi-person me-1"></i> <strong><%= application.studentId.name %></strong>
+    </p>
+
+    <!-- Interview Title -->
+    <h3 class="card-title mb-3">
+      Interview – <%= application.postingId.title %> 
+      <i class="bi bi-briefcase text-muted"></i>
+    </h3>
+
+    <!-- Date/Time -->
+    <p class="card-text mb-3">
+      <i class="bi bi-calendar-event me-1"></i> Scheduled on 
+      <strong><%= interview.interviewDate ? new Date(interview.interviewDate).toLocaleString() : 'Not scheduled' %></strong>
+    </p>
+
+    <!-- Badge for status -->
+    <div class="mb-3">
+      <span class="badge text-bg-<%=badgeClass%> fs-6"><%= interview.result || 'Pending' %></span>
+    </div>
+
+    <!-- Meeting Buttons -->
+    <div class="mb-3 d-flex flex-column flex-md-row gap-2 justify-content-center">
+      <a href="<%= interview.meetLink || '#' %>" target="_blank" 
+         class="btn btn-outline-success px-4 py-2 d-flex align-items-center justify-content-center gap-2">
+        <img src="https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-96dp/logo_meet_2020q4_color_2x_web_96dp.png" 
+             alt="Google Meet" style="height: 20px;">
+        Join with Google Meet
+      </a>
+
+      <a href="<%= interview.teamsLink || '#' %>" target="_blank" 
+         class="btn btn-outline-primary px-4 py-2 d-flex align-items-center justify-content-center gap-2">
+        <img src="https://mattermost.com/wp-content/uploads/2021/04/ms-teams-meetings-integration.webp" 
+             alt="Microsoft Teams" style="height: 20px;">
+        Join with Teams
+      </a>
+    </div>
+
+    <!-- Accept / Reject Buttons -->
+    <div class="d-flex justify-content-center gap-3 mt-3">
+      <form action="/api/company/<%= company._id %>/interviews/<%= interview._id %>/accept?_method=PATCH" method="POST">
+        <button type="submit" class="btn btn-success" 
+                <%= interview.result && interview.result !== 'Pending' ? 'disabled' : '' %>>
+          Accept
+        </button>
+      </form>
+      <form action="/api/company/<%= company._id %>/interviews/<%= interview._id %>/reject?_method=PATCH" method="POST">
+        <button type="submit" class="btn btn-danger" 
+                <%= interview.result && interview.result !== 'Pending' ? 'disabled' : '' %>>
+          Reject
+        </button>
+      </form>
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-4">
+      <a href="/api/company/<%= company._id %>/interviews" class="btn btn-outline-primary px-4 py-2">
+        <i class="bi bi-arrow-left"></i> Back to Interviews
+      </a>
+    </div>
+
+  </div>
+</div>

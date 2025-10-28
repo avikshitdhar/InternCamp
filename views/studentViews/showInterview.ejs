@@ -1,0 +1,107 @@
+<%
+let badgeClass, borderClass, iconClass, iconColor, alertClass, alertText;
+
+switch (interview.result) {
+  case 'Pending':
+    badgeClass = 'warning';
+    borderClass = 'border-warning';
+    iconClass = 'bi bi-clock-history';
+    iconColor = 'text-warning';
+    alertClass = 'warning';
+    alertText = 'Your interview has been scheduled and is awaiting completion.';
+    break;
+
+  case 'Accepted':
+    badgeClass = 'success';
+    borderClass = 'border-success';
+    iconClass = 'bi bi-check-circle-fill';
+    iconColor = 'text-success';
+    alertClass = 'success';
+    alertText = 'Congratulations! You have been selected for this position.';
+    break;
+
+  case 'Rejected':
+    badgeClass = 'danger';
+    borderClass = 'border-danger';
+    iconClass = 'bi bi-x-circle-fill';
+    iconColor = 'text-danger';
+    alertClass = 'danger';
+    alertText = 'Unfortunately, you were not selected. Keep trying!';
+    break;
+
+  default:
+    badgeClass = 'secondary';
+    borderClass = 'border-secondary';
+    iconClass = 'bi bi-question-circle-fill';
+    iconColor = 'text-secondary';
+    alertClass = 'secondary';
+    alertText = 'Status unknown.';
+}
+%>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh; background-color: #f8f9fa;">
+  <div class="card shadow-lg border-<%=borderClass%> text-center p-5" style="width: 90%; max-width: 700px; border-radius: 1rem;">
+    
+    <!-- Icon -->
+    <div class="mb-4">
+      <i class="<%=iconClass%> <%=iconColor%>" style="font-size: 4rem;"></i>
+    </div>
+
+    <!-- Interview Title -->
+    <h3 class="card-title mb-3">
+      Interview – <%= application.postingId.title %> 
+      <i class="bi bi-briefcase text-muted"></i>
+    </h3>
+
+    <!-- Company Info -->
+    <p class="text-muted mb-2">
+      <i class="bi bi-building me-1"></i> <%= application.postingId.userId.name %>
+    </p>
+
+    <!-- Scheduled Date -->
+    <p class="card-text mb-3">
+      <i class="bi bi-calendar-event me-1"></i> Scheduled on <strong><%= interview.interviewDate %></strong>
+    </p>
+
+    <!-- Status Alert -->
+    <div class="alert alert-<%=alertClass%>" role="alert">
+      <span class="badge text-bg-<%=badgeClass%> fs-6 mb-2"><%= interview.result %></span>
+      <div><%= alertText %></div>
+    </div>
+
+    <!-- Conditional Join Buttons -->
+    <% if (interview.result === 'Pending') { %>
+      <div class="mb-3 d-flex flex-column flex-md-row gap-2 justify-content-center">
+        <a href="<%= interview.meetLink || '#' %>" target="_blank" 
+           class="btn btn-outline-success px-4 py-2 d-flex align-items-center justify-content-center gap-2">
+          <img src="https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-96dp/logo_meet_2020q4_color_2x_web_96dp.png" 
+               alt="Google Meet" style="height: 20px;">
+          Join with Google Meet
+        </a>
+
+        <a href="<%= interview.teamsLink || '#' %>" target="_blank" 
+           class="btn btn-outline-primary px-4 py-2 d-flex align-items-center justify-content-center gap-2">
+          <img src="https://mattermost.com/wp-content/uploads/2021/04/ms-teams-meetings-integration.webp" 
+               alt="Microsoft Teams" style="height: 20px;">
+          Join with Teams
+        </a>
+      </div>
+    <% } %>
+
+    <!-- Feedback -->
+    <% if (interview.feedback) { %>
+      <div class="mt-3 text-start mx-auto" style="max-width: 500px;">
+        <p class="fw-bold mb-1"><i class="bi bi-chat-left-text me-1"></i> Feedback</p>
+        <p class="text-muted mb-0"><%= interview.feedback %></p>
+      </div>
+    <% } %>
+
+    <!-- Back Button -->
+    <div class="mt-4">
+      <a href="/api/student/<%= student._id %>/applications/<%= application._id %>" class="btn btn-outline-primary px-4 py-2">
+        <i class="bi bi-arrow-left"></i> Back to Application
+      </a>
+    </div>
+
+  </div>
+</div>

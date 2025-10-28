@@ -1,0 +1,27 @@
+<!-- views/studentViews/noOpportunities.ejs -->
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh; background-color: #f8f9fa;">
+  <div class="card shadow-sm text-center p-5" style="max-width: 600px; border-radius: 1rem;">
+    
+    <div class="mb-3">
+      <i class="bi bi-exclamation-circle text-warning" style="font-size: 4rem;"></i>
+    </div>
+
+    <h3 class="mb-3">No Opportunities Available</h3>
+    <p class="text-muted mb-4">
+      There are currently no opportunities available for your department (<strong><%= student.department %></strong>).
+    </p>
+
+    <div class="alert alert-secondary text-start mx-auto" style="max-width: 400px;">
+      <i class="bi bi-info-circle me-2"></i>
+      Please check back later. New opportunities may be posted soon.
+    </div>
+
+    <div class="mt-4">
+      <a href="/api/student/<%= student._id %>" class="btn btn-outline-primary px-4 py-2">
+        <i class="bi bi-arrow-left me-1"></i> Back to Profile
+      </a>
+    </div>
+
+  </div>
+</div>

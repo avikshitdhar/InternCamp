@@ -1,0 +1,57 @@
+<div class="container my-5">
+  <h3 class="mb-4 text-center">Your Applications</h3>
+
+  <% if (applications.length === 0) { %>
+    <div class="alert alert-secondary text-center">
+      You have not applied to any opportunities yet.
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Position</th>
+            <th>Company</th>
+            <th>Job Description</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let i = 0; i < applications.length; i++) {
+              const appl = applications[i];
+              const interview = interviews[i];
+
+              let badgeClass;
+              switch (appl.status) {
+                case 'Applied': badgeClass = 'secondary'; break;
+                case 'Test Given': badgeClass = 'info'; break;
+                case 'Rejected': badgeClass = 'danger'; break;
+                case 'Shortlisted': badgeClass = 'success'; break;
+                default: badgeClass = 'secondary';
+              }
+
+              // Highlight green if shortlisted AND interview accepted
+              const highlightRow = (appl.status === 'Shortlisted' && interview && interview.result === 'Accepted');
+          %>
+
+            <tr class="<%= highlightRow ? 'table-success' : '' %>">
+              <td><%= appl.postingId.title %></td>
+              <td><%= appl.postingId.userId.name %></td>
+              <td><%= appl.postingId.description %></td>
+              <td>
+                <span class="badge text-bg-<%= badgeClass %>"><%= appl.status %></span>
+              </td>
+              <td>
+                <a href="/api/student/<%= student._id %>/applications/<%= appl._id %>" class="btn btn-sm btn-primary">
+                  View Details
+                </a>
+              </td>
+            </tr>
+
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

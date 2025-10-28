@@ -1,0 +1,133 @@
+<%
+let isDisabled = application ? 'disabled' : '';
+let isCgpa = true, isDept = false, isYear = false;
+let bgClass = 'success';
+
+if (student.cgpa < opportunity.eligibility.minCgpa) {
+  isCgpa = false;
+}
+
+for (let dept of opportunity.eligibility.eligibleDepartments) {
+  if (student.department == dept) {
+    isDept = true;
+    break;
+  }
+}
+
+for (let year of opportunity.eligibility.eligibleYears) {
+  if (student.graduation_year == year) {
+    isYear = true;
+    break;
+  }
+}
+
+let isEligible = isCgpa && isDept && isYear;
+
+let isClosed = false;
+if (opportunity.deadline && new Date(opportunity.deadline) < new Date()) {
+  isClosed = true;
+}
+
+let buttonText;
+
+if (isClosed) {
+  buttonText = 'Closed';
+  bgClass = 'secondary';
+  isDisabled = 'disabled';
+} else if (!application && isEligible) {
+  buttonText = 'Apply';
+} else if (application) {
+  buttonText = 'Already Applied';
+  isDisabled = 'disabled';
+} else {
+  buttonText = 'Not Eligible';
+  bgClass = 'danger';
+  isDisabled = 'disabled';
+}
+%>
+
+<div class="container my-5" style="max-width: 800px;">
+  <div class="card shadow-lg border-0">
+    <div class="card-body p-4">
+      
+      <h2 class="card-title mb-1"><%= opportunity.title %></h2>
+      <h5 class="text-muted mb-3">
+        <i class="bi bi-building me-1"></i> <%= opportunity.userId?.name || 'Unknown Company' %>
+      </h5>
+
+      <div class="d-flex flex-wrap gap-3 mb-3">
+        <span class="badge bg-primary bg-opacity-75"><%= opportunity.postingType %></span>
+        <span class="text-muted">
+          <i class="bi bi-geo-alt-fill text-danger me-1"></i> 
+          <%= opportunity.location || 'Not specified' %>
+        </span>
+      </div>
+
+      <hr>
+
+      <div class="mb-4">
+        <h5>Description</h5>
+        <p class="text-secondary"><%= opportunity.description %></p>
+      </div>
+
+      <div class="mb-4">
+        <h5>Eligibility Criteria</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Minimum CGPA:</strong> <%= opportunity.eligibility?.minCgpa %></li>
+          <li class="list-group-item"><strong>Eligible Departments:</strong> <%= opportunity.eligibility?.eligibleDepartments?.join(', ') || 'All Departments' %></li>
+          <li class="list-group-item"><strong>Eligible Years:</strong> <%= opportunity.eligibility?.eligibleYears?.join(', ') || 'All Years' %></li>
+        </ul>
+      </div>
+
+      <div class="mb-4">
+        <h5>Additional Information</h5>
+        <p><strong>Deadline:</strong> <%= opportunity.deadline ? new Date(opportunity.deadline).toLocaleDateString() : 'No deadline specified' %></p>
+        <p><strong>Stipend:</strong> <%= opportunity.stipend ? '₹' + opportunity.stipend : 'Not specified' %></p>
+      </div>
+
+      <!-- Upload Resume & Apply Buttons -->
+      <div class="text-center mt-4 d-flex justify-content-center gap-3">
+
+        <!-- Upload Resume Button -->
+        <form action="/api/student/<%= student._id %>/uploadResume" method="POST" enctype="multipart/form-data">
+          <input type="file" name="resume" accept=".pdf" style="display:none;" id="resumeInput" />
+          <button type="button" class="btn btn-outline-primary px-4 py-2" 
+                  onclick="document.getElementById('resumeInput').click();" 
+                  <%= (!isEligible || isClosed || application) ? 'disabled' : '' %>>
+            <i class="bi bi-upload me-2"></i> Upload Resume
+          </button>
+        </form>
+
+        <!-- Apply Button triggers modal -->
+        <button type="button" class="btn btn-<%= bgClass %> px-4 py-2" 
+                data-bs-toggle="modal" data-bs-target="#applyModal" 
+                <%= (!isEligible || isClosed || application) ? 'disabled' : '' %>>
+          <i class="bi bi-send-fill me-2"></i> <%= buttonText %>
+        </button>
+
+      </div>
+
+      <!-- Apply Confirmation Modal -->
+      <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="applyModalLabel">Confirm Application</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to apply for <strong><%= opportunity.title %></strong> at <strong><%= opportunity.userId?.name || 'Unknown Company' %></strong>?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <form action="/api/student/<%= student._id %>/opportunities/<%= opportunity._id %>" method="POST">
+                <button type="submit" class="btn btn-<%= bgClass %>">Yes, Apply</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,149 @@
+<div class="container my-5" style="max-width: 700px;">
+  <div class="card shadow-lg rounded-4">
+    <div class="card-body p-4">
+
+      <!-- Alert if student is shortlisted -->
+      <% if (interview) { %>
+        <div class="alert alert-info text-center mb-4">
+          This student has been shortlisted for an interview on 
+          <strong><%= new Date(interview.interviewDate).toLocaleString() %></strong>
+        </div>
+      <% } %>
+
+      <!-- Student Name -->
+      <h2 class="card-title mb-4 text-center">
+        <i class="bi bi-person-circle text-primary me-2"></i>
+        <%= application.studentId.name %>
+      </h2>
+
+      <!-- Student Details -->
+      <ul class="list-group list-group-flush mb-4">
+        <li class="list-group-item"><strong>College ID:</strong> <%= application.studentId.collegeId %></li>
+        <li class="list-group-item"><strong>Email:</strong> <%= application.studentId.email %></li>
+        <li class="list-group-item"><strong>Program:</strong> <%= application.studentId.program %></li>
+        <li class="list-group-item"><strong>Department:</strong> <%= application.studentId.department %></li>
+        <li class="list-group-item"><strong>Graduation Year:</strong> <%= application.studentId.graduation_year %></li>
+        <li class="list-group-item"><strong>CGPA:</strong> <%= application.studentId.cgpa %></li>
+        <li class="list-group-item">
+          <strong>Resume:</strong> 
+          <% if(application.studentId.resume_url) { %>
+            <a href="<%= application.studentId.resume_url %>" target="_blank" class="btn btn-sm btn-outline-primary">View Resume</a>
+          <% } else { %>
+            Not Provided
+          <% } %>
+        </li>
+      </ul>
+
+      <!-- Test Score -->
+      <!-- Test Score -->
+      <% if (application.testLink) { %>
+        <div class="text-center my-4">
+          <% 
+            const score = application.testScore || 0;
+            let badgeClass = 'bg-danger-subtle text-danger';
+            if (score >= 7.5) badgeClass = 'bg-success-subtle text-success';
+            else if (score >= 5) badgeClass = 'bg-warning-subtle text-warning';
+          %>
+          <div class="d-inline-block px-5 py-3 rounded-4 shadow-sm <%= badgeClass %>">
+            <h3 class="fw-bold mb-0"><%= score %>%</h3>
+            <small class="text-muted d-block mt-1">Test Score</small>
+          </div>
+        </div>
+      <% } %>
+
+
+      <!-- Buttons if no interview -->
+      <% if (!interview) { %>
+        <div class="d-flex justify-content-center gap-3">
+          <button type="button" class="btn btn-success px-4" data-bs-toggle="modal" data-bs-target="#shortlistModal">
+            <i class="bi bi-check-circle me-1"></i> Shortlist
+          </button>
+
+          <button type="button" class="btn btn-danger px-4" data-bs-toggle="modal" data-bs-target="#rejectModal">
+            <i class="bi bi-x-circle me-1"></i> Reject
+          </button>
+        </div>
+      <% } %>
+
+      <!-- Back Button -->
+      <div class="mt-4 text-center">
+        <a href="/api/company/<%= company._id %>/postings/<%= posting._id %>/applications" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i> Back to Applicants
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Shortlist Modal -->
+<!-- Shortlist Modal -->
+<div class="modal fade" id="shortlistModal" tabindex="-1" aria-labelledby="shortlistModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="shortlistModalLabel">Schedule Interview</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <form 
+        action="/api/company/<%= company._id %>/postings/<%= posting._id %>/applications/<%= application._id %>/shortlist?_method=PATCH" 
+        method="POST"
+      >
+        <div class="modal-body">
+          <p class="text-muted">Please select an interview date and time for this shortlisted applicant.</p>
+          
+          <div class="mb-3">
+            <label for="interviewDate" class="form-label">Interview Date</label>
+            <input 
+              type="date" 
+              id="interviewDate" 
+              name="interviewDate" 
+              class="form-control" 
+              required
+            >
+          </div>
+
+          <div class="mb-3">
+            <label for="interviewTime" class="form-label">Interview Time</label>
+            <input 
+              type="time" 
+              id="interviewTime" 
+              name="interviewTime" 
+              class="form-control" 
+              required
+            >
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-calendar-check me-1"></i> Confirm Shortlist
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rejectModalLabel">Confirm Reject</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to reject this applicant?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form action="/api/company/<%= company._id %>/postings/<%=posting._id%>/applications/<%= application._id %>/reject?_method=PATCH" method="POST">
+          <button type="submit" class="btn btn-danger">Yes, Reject</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

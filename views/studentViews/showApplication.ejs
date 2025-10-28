@@ -1,0 +1,96 @@
+<% let badgeClass, borderClass;
+switch (application.status) {
+    case 'Applied':
+        badgeClass = 'secondary';
+        borderClass = 'border-secondary';
+        break;
+    case 'Test Given':
+        badgeClass = 'info';
+        borderClass = 'border-info';
+        break;
+    case 'Rejected':
+        badgeClass = 'danger';
+        borderClass = 'border-danger';
+        break;
+    case 'Shortlisted':
+        badgeClass = 'success';
+        borderClass = 'border-success';
+        break;
+    default:
+        badgeClass = 'secondary';
+        borderClass = 'border-secondary';
+} %>
+
+<%
+  let btnText;
+  if (application.status === 'TestCompleted') {
+    btnText = `Score: ${application.testScore}`;
+  } else {
+    btnText = 'Take Test <i class="bi bi-box-arrow-up-right"></i>';
+  }
+%>
+
+<% 
+  let disableClass;
+  if(!application.testLink || application.status==='TestCompleted'){
+    disableClass='disabled';
+  }else disableClass='';
+%>
+
+<div class="card shadow-sm mb-4 border <%= borderClass %>">
+  <div class="row g-0">
+
+    <!-- LEFT: Image -->
+    <div class="col-md-4 bg-light d-flex align-items-center justify-content-center border-end">
+      <img 
+        src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80" 
+        class="img-fluid rounded-start p-3" 
+        alt="Company Image"
+      >
+    </div>
+
+    <!-- MIDDLE: Eligibility -->
+    <div class="col-md-4 bg-body-secondary border-end p-4">
+      <h5 class="card-title mb-3"><%= application.postingId.title %></h5>
+      <p class="card-text fs-6 mb-2">
+        <%= application.postingId.userId.name %>
+        <span class="badge text-bg-<%= badgeClass %> fs-6"><%= application.status %></span>
+      </p>
+      <p class="card-text mb-2"><i class="bi bi-geo-alt-fill text-danger"></i> <%= application.postingId.location %></p>
+      <p class="card-text mb-2"><i class="bi bi-calendar2-date-fill"></i> Deadline: <%= application.postingId.deadline %></p>
+      <p class="card-text mb-2"><i class="bi bi-currency-exchange"></i> Rs.<%= application.postingId.stipend %>/month</p>
+      <p class="card-text"><i class="bi bi-journal-bookmark"></i> Min CGPA: <%= application.postingId.eligibility.minCgpa %>+</p>
+    </div>
+
+    <!-- RIGHT: Description + Buttons -->
+    <div class="col-md-4 bg-light-subtle p-4 d-flex flex-column justify-content-between">
+      <div>
+        <h6 class="text-muted mb-2">Description</h6>
+        <p class="card-text"><%= application.postingId.description %></p>
+      </div>
+
+      <div class="d-grid gap-2 mt-3">
+        <!-- <a 
+          href="<%= application.testLink ? `/api/student/${student._id}/application/${application._id}/${application.testLink}` : '#' %>" 
+          class="btn btn-primary w-100 <%= !application.testLink ? 'disabled' : '' %>"
+        >
+          Take Test <i class="bi bi-box-arrow-up-right"></i>
+        </a> -->
+
+        <form action="/api/student/<%=student._id%>/applications/<%=application._id%>/test?_method=PATCH" method="POST">
+          <button class="btn btn-primary w-100 <%= disableClass%>">
+              <%-btnText%>
+          </button>
+        </form>
+
+        <a 
+          href="/api/student/<%=student._id%>/applications/<%=application._id%>/interview" 
+          class="btn btn-secondary w-100"
+        >
+          Interview Details <i class="bi bi-info-circle-fill"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>

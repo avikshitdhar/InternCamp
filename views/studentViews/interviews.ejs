@@ -1,0 +1,50 @@
+<% if (!interviews || interviews.length === 0) { %>
+  <div class="alert alert-info text-center my-4">
+    No interviews scheduled yet.
+  </div>
+<% } else { %>
+
+<table class="table table-hover align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Position</th>
+      <th>Company</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for (let interview of interviews) { 
+         if (!interview) continue;
+
+         // Determine badge class
+         let badgeClass;
+         switch(interview.result){
+           case 'Accepted': badgeClass='success'; break;
+           case 'Pending': badgeClass='warning'; break;
+           case 'Rejected': badgeClass='danger'; break;
+           default: badgeClass='secondary';
+         }
+
+         // Determine row class
+         let rowClass = 'bg-light'; // default for Pending or unknown
+         if (interview.result === 'Accepted') rowClass = 'table-success';
+         else if (interview.result === 'Rejected') rowClass = 'table-danger';
+    %>
+      <tr class="<%= rowClass %>">
+        <td><%= interview.applicationId.postingId.title %></td>
+        <td><%= interview.applicationId.postingId.userId.name %></td>
+        <td><i class="bi bi-calendar-event me-1"></i> <%= interview.interviewDate.toLocaleDateString() %></td>
+        <td><span class="badge text-bg-<%= badgeClass %>"><%= interview.result %></span></td>
+        <td>
+          <a href="/api/student/<%= interview.applicationId.studentId %>/applications/<%= interview.applicationId._id %>/interview" class="btn btn-sm btn-primary">
+            View Details
+          </a>
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+<% } %>
