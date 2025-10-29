@@ -91,8 +91,7 @@ app.use('/', studentRoutes);
 app.use('/',companyRoutes);
 app.use('/',adminRoutes);
 
-
-//admin routes
+module.exports = app;
 
 
 
