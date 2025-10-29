@@ -2,15 +2,22 @@ const express = require('express');
 const cors = require('cors');
 const router=express.Router();
 const expressLayouts = require('express-ejs-layouts');
-const mongoose=require('mongoose');
-mongoose.connect('mongodb://localhost:27017/intern-web')
-    .then(()=>{
-        console.log("MONGOOSE ON");
-    })
-    .catch((err)=>{
-        console.log(err);
-    });
+const mongoose = require('mongoose');
+require('dotenv').config();
 
+const mongoUri = process.env.MONGO_URI;
+
+
+mongoose.connect(mongoUri)
+// , {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// })
+.then(() => console.log('MongoDB connected'))
+.catch(err => {
+  console.error('MongoDB connection error:', err);
+  process.exit(1); // exit to fail fast (optional)
+});
 const Admin=require('./models/admin.js');
 const Application=require('./models/application.js');
 const Company=require('./models/company.js');
