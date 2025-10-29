@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const authenticateUser=require('../middleware/authenticate');
 
 const placementTicker = require('../middleware/placementTicker');
 

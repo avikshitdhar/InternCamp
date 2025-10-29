@@ -6,14 +6,23 @@
       <p class="text-muted mb-0">Sign in to continue to CampusLink</p>
     </div>
 
-    <form action="/login" method="POST">
+    <% if (typeof error !== 'undefined' && error) { %>
+  <div class="alert alert-danger text-center" role="alert">
+    <%= error %>
+  </div>
+<% } %>
+
+
+    <form action="/login" method="POST" novalidate>
       <div class="mb-3">
         <label for="type" class="form-label fw-medium">Login as</label>
-        <select name="type" id="type" class="form-select">
+        <select name="type" id="type" class="form-select" required>
+          <option value="">Select...</option>
           <option value="student">Student</option>
           <option value="company">Company</option>
           <option value="admin">Admin</option>
         </select>
+        <div class="invalid-feedback">Please choose a user type.</div>
       </div>
 
       <div class="mb-3">
@@ -21,6 +30,7 @@
         <div class="input-group">
           <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
           <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+          <div class="invalid-feedback">Please enter a valid email.</div>
         </div>
       </div>
 
@@ -29,6 +39,7 @@
         <div class="input-group">
           <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
           <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+          <div class="invalid-feedback">Please enter your password.</div>
         </div>
       </div>
 
@@ -44,3 +55,20 @@
     </form>
   </div>
 </div>
+
+<!-- Client-side Bootstrap Validation -->
+<script>
+(() => {
+  'use strict'
+  const forms = document.querySelectorAll('form')
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+</script>

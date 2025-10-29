@@ -16,6 +16,11 @@ const adminSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    logo: {
+        type: String,          // URL or base64 string
+        trim: true,
+        default: ''            // Optional default empty
     }
 }, { timestamps: true });
 

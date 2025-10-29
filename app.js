@@ -28,6 +28,7 @@ const User=require('./models/user.js');
 // const { notFound } = require('./middleware/notFound.middleware');
 // const { errorHandler } = require('./middleware/error.middleware');
 const path = require('path');
+const authenticateUser=require('./middleware/authenticate.js');
 
 
 
@@ -67,7 +68,14 @@ app.get('/', (req, res) => {
 //login
 app.get('/login',(req,res)=>{
     res.render('login.ejs');
-})
+});
+
+// LOGIN ROUTE
+app.post('/login', authenticateUser, (req, res) => {
+  res.redirect(`/api/${req.userType}/${req.user._id}`);
+});
+
+
 
 //signup
 app.get('/signup',(req,res)=>{
@@ -77,9 +85,18 @@ app.get('/signup',(req,res)=>{
 //////STUDENT ROUTES//////////
 const studentRoutes = require('./routes/studentRoutes');
 const companyRoutes=require('./routes/companyRoutes');
+const adminRoutes=require('./routes/adminRoutes.js');
 
 app.use('/', studentRoutes);
 app.use('/',companyRoutes);
+app.use('/',adminRoutes);
+
+
+//admin routes
+
+
+
+
 
 
 
