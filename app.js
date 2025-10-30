@@ -3,18 +3,35 @@ const express = require('express');
 const cors = require('cors');
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
-// require('dotenv').config();
 const path = require('path');
 const methodOverride = require('method-override');
 const authenticateUser = require('./middleware/authenticate.js');
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://arnab1mitmpl2023_db_user:2MXilxNYDBiTl1A2@cluster0.at0uxsq.mongodb.net/campusLink?retryWrites=true&w=majority&appName=Cluster0')
-  .then(async () => {
-    console.log("✅ Connected to:", mongoose.connection.host);
-    console.log("📦 Using database:", mongoose.connection.name);
-  })
-  .catch(err => console.error("MongoDB connection error:", err));
+// mongoose.connect('mongodb+srv://arnab1mitmpl2023_db_user:2MXilxNYDBiTl1A2@cluster0.at0uxsq.mongodb.net/campusLink?retryWrites=true&w=majority&appName=Cluster0')
+//   .then(async () => {
+//     console.log("✅ Connected to:", mongoose.connection.host);
+//     console.log("📦 Using database:", mongoose.connection.name);
+//   })
+//   .catch(err => console.error("MongoDB connection error:", err));
+
+(async () => {
+  try {
+    console.log('⏳ Connecting to MongoDB...');
+    await mongoose.connect('mongodb+srv://arnab1mitmpl2023_db_user:2MXilxNYDBiTl1A2@cluster0.at0uxsq.mongodb.net/campusLink?retryWrites=true&w=majority&appName=Cluster0', {
+      serverSelectionTimeoutMS: 10000,
+      family: 4, // Forces IPv4, helps on Windows networks
+    });
+
+    console.log('✅ MongoDB connected to host:', mongoose.connection.host);
+    console.log('📦 Using database:', mongoose.connection.name);
+
+    // app.listen(PORT, () => console.log(🚀 Server running on port ${PORT}));
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err.message);
+    process.exit(1);
+  }
+})();
 
 // Import Models
 const Admin = require('./models/admin.js');
