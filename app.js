@@ -3,13 +3,13 @@ const express = require('express');
 const cors = require('cors');
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
-require('dotenv').config();
+// require('dotenv').config();
 const path = require('path');
 const methodOverride = require('method-override');
 const authenticateUser = require('./middleware/authenticate.js');
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect('mongodb+srv://arnab1mitmpl2023_db_user:2MXilxNYDBiTl1A2@cluster0.at0uxsq.mongodb.net/campusLink?retryWrites=true&w=majority&appName=Cluster0')
   .then(async () => {
     console.log("✅ Connected to:", mongoose.connection.host);
     console.log("📦 Using database:", mongoose.connection.name);
