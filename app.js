@@ -6,19 +6,13 @@ const mongoose = require('mongoose');
 const path = require('path');
 const methodOverride = require('method-override');
 const authenticateUser = require('./middleware/authenticate.js');
+require("dotenv").config();
 
-// Connect to MongoDB
-// mongoose.connect('mongodb+srv://arnab1mitmpl2023_db_user:2MXilxNYDBiTl1A2@cluster0.at0uxsq.mongodb.net/campusLink?retryWrites=true&w=majority&appName=Cluster0')
-//   .then(async () => {
-//     console.log("✅ Connected to:", mongoose.connection.host);
-//     console.log("📦 Using database:", mongoose.connection.name);
-//   })
-//   .catch(err => console.error("MongoDB connection error:", err));
 
 (async () => {
   try {
     console.log('⏳ Connecting to MongoDB...');
-    await mongoose.connect('mongodb+srv://arnab1mitmpl2023_db_user:2MXilxNYDBiTl1A2@cluster0.at0uxsq.mongodb.net/campusLink?retryWrites=true&w=majority&appName=Cluster0', {
+    await mongoose.connect(process.env.MONGO_URI, {
       serverSelectionTimeoutMS: 10000,
       family: 4, // Forces IPv4, helps on Windows networks
     });
